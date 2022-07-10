@@ -1,0 +1,112 @@
+
+---
+MEM
+---
+
+
+$ cat /proc/meminfo
+MemTotal:        2041240 kB
+MemFree:          757804 kB
+MemAvailable:    1201404 kB
+Buffers:           79344 kB
+Cached:           487328 kB
+SwapCached:            0 kB
+Active:           684932 kB
+Inactive:         371500 kB
+...
+
+
+
+
+Этот инструмент хорош для скриптов.
+
+Выведем в мегабайтах (-S M)
+
+$ vmstat -S M
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 1  0      0    358     52    347    0    0    57   752   72  100  5  1 93  1  0
+
+
+memory
+	swpd - размер swap'а (важный парамметр)
+	free - свободная память (важный парамметр)
+	buff (буфиризированная память) - те страница памяти, которые зарезервированы системой для некоторых процессов, чтобы отдать ее при необходимости этим процессам.
+	cache (кэш) - страницы памяти в которой находится информация, к которой идет частое обращение.
+
+swap
+	si - считано блоков со swap'а
+	so - записано блоков в swap.
+
+Вот так можно посмотреть дополнительную информацию (a) о памяти
+
+$ vmstat -a -S M
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free  inact active   si   so    bi    bo   in   cs us sy id wa st
+ 1  0      0    327    243   1177    0    0    50   656   68   94  4  1 94  1  0
+
+memory
+	incative -  память ,которая выделена для некоторых процессов, но она не используется на данный момент.
+	active - память, которая действительно используется процессами
+
+
+Еще полезно выводить так
+
+$ vmstat -s -S M
+         1993 M total memory
+         1236 M used memory
+         1182 M active memory
+          243 M inactive memory
+          323 M free memory
+           69 M buffer memory
+          364 M swap cache
+            0 M total swap
+            0 M used swap
+            0 M free swap
+        80646 non-nice user cpu ticks
+          292 nice user cpu ticks
+        23148 system cpu ticks
+      1841600 idle cpu ticks
+         9787 IO-wait cpu ticks
+            0 IRQ cpu ticks
+         2099 softirq cpu ticks
+            0 stolen cpu ticks
+       932782 pages paged in
+     12186548 pages paged out
+            0 pages swapped in
+            0 pages swapped out
+      1289809 interrupts
+      1799651 CPU context switches
+   1657437565 boot time
+         4473 forks
+
+
+
+
+
+Хороший инструмент
+
+$ free -h
+              total        used        free      shared  buff/cache   available
+Mem:          1.9Gi       641Mi       738Mi        16Mi       613Mi       1.1Gi
+Swap:            0B          0B          0B
+
+shared - это та память, которую используют несколько процессов между собой
+
+
+
+
+Так же можно использовать 
+
+$ top
+
+
+$ htop
+
+
+
+
+Устроить стрес памяти. Будет работать 1-ин воркер и займет он 512 M/B оперативной памяти
+
+$ stress --vm 1 --vm-bytes 512M
+
